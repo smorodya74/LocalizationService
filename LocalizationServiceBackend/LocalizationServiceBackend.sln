@@ -6,10 +6,20 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationService.Domain", "LocalizationService.Domain\LocalizationService.Domain.csproj", "{9EA63707-D843-43AE-A495-35890BD1733B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationService.DAL", "LocalizationService.DAL\LocalizationService.DAL.csproj", "{7B9A8C0E-5913-4844-BA02-CAE0206AFC8C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E5B83C6-4E61-4E3A-BCC0-B4A1D364E1AA} = {4E5B83C6-4E61-4E3A-BCC0-B4A1D364E1AA}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationService.Application", "LocalizationService.Application\LocalizationService.Application.csproj", "{4E5B83C6-4E61-4E3A-BCC0-B4A1D364E1AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9EA63707-D843-43AE-A495-35890BD1733B} = {9EA63707-D843-43AE-A495-35890BD1733B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationService.WebAPI", "LocalizationService.WebAPI\LocalizationService.WebAPI.csproj", "{33762614-E6D0-4A1F-A1C5-83D5816D2041}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E5B83C6-4E61-4E3A-BCC0-B4A1D364E1AA} = {4E5B83C6-4E61-4E3A-BCC0-B4A1D364E1AA}
+		{7B9A8C0E-5913-4844-BA02-CAE0206AFC8C} = {7B9A8C0E-5913-4844-BA02-CAE0206AFC8C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
