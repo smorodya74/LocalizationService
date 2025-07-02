@@ -1,7 +1,7 @@
 ﻿using LocalizationService.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChoreoCreator.DataAccess
+namespace LocalizationService.DAL
 {
     public class LocalizationServiceDbContext : DbContext
     {

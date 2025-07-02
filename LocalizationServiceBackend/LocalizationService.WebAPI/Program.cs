@@ -1,5 +1,12 @@
+using LocalizationService.DAL;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<LocalizationServiceDbContext>(options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(LocalizationServiceDbContext)));
+    });
 
 builder.Services.AddControllers();
 
