@@ -1,0 +1,17 @@
+﻿using LocalizationService.Domain.Models;
+using LocalizationService.Domain.ValueObjects;
+
+namespace LocalizationService.Application.Abstractions.Repositories
+{
+    public interface ITranslationsRepository
+    {
+        Task<List<Translation>?> GetAllAsync();
+        Task<List<Translation>?> GetByKeyAsync(LocalizationKey key);
+        Task<Translation?> GetByPairAsync(LocalizationKey key, string languageCode);
+        Task<List<Translation>?> GetByLanguageAsync(string languageCode);
+
+        Task<string> CreateAsync(LocalizationKey key, Translation translation);
+        Task<string> UpdateAsync(LocalizationKey key, Translation translation);
+        Task<bool> DeleteAsync(LocalizationKey key);
+    }
+}

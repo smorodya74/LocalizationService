@@ -8,23 +8,24 @@ namespace LocalizationService.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<TranslationEntity> builder)
         {
-            builder.HasKey(t => t.Id);
+            builder.HasKey(t => new { t.LocalizationKey, t.LanguageCode });
 
-            builder.HasOne(t => t.Language)
-                .WithMany(l => l.Translations)
-                .HasForeignKey(t => t.LanguageId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(t => t.LocalizationKey)
-                .WithMany(k => k.Translations)
-                .HasForeignKey(t => t.LocalizationId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasIndex(t => new { t.LocalizationId, t.LanguageId })
-                .IsUnique();
+            builder.Property(t => t.LocalizationKey)
+                .HasMaxLength(256)
+                .IsRequired();
 
             builder.Property(t => t.TranslationText)
                 .HasColumnType("text");
+
+            builder.HasOne(t => t.Language)
+                .WithMany(l => l.Translations)
+                .HasForeignKey(t => t.LanguageCode)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne<LocalizationKeyEntity>()
+                .WithMany(k => k.Translations)
+                .HasForeignKey(t => t.LocalizationKey)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

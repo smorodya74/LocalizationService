@@ -19,4 +19,8 @@
     <ProjectReference Include="..\LocalizationService.Application\LocalizationService.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

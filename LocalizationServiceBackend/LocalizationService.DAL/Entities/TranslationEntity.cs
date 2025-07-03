@@ -1,16 +1,15 @@
 ﻿namespace LocalizationService.DAL.Entities
 {
+    /// <summary>
+    ///     Перевод по ключу-языку (key-code)
+    /// </summary>
     public class TranslationEntity
     {
-        public Guid Id { get; set; }
-        
-        public Guid LocalizationId { get; set; }
-        public LocalizationKeyEntity LocalizationKey { get; set; } = null!;
+        public string LocalizationKey { get; set; } = null!;
 
-        public Guid LanguageId { get; set; }
+        public string LanguageCode { get; set; } = null!;
         public LanguageEntity Language { get; set; } = null!;
 
-        public string? TranslationText { get; set; }
-        public bool IsEditing { get; set; }
+        public string TranslationText { get; set; }
     }
 }

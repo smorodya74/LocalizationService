@@ -1,15 +1,24 @@
+using LocalizationService.Application.Abstractions.Repositories;
 using LocalizationService.DAL;
+using LocalizationService.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<LocalizationServiceDbContext>(options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(LocalizationServiceDbContext)));
+        var connectionString = builder.Configuration.GetConnectionString(nameof(LocalizationServiceDbContext));
+        options.UseNpgsql(connectionString);
     });
 
+builder.Services.AddScoped<ILanguagesRepository, LanguagesRepository>();
+builder.Services.AddScoped<ILocalizationKeysRepository, LocalizationKeysRepository>();
+builder.Services.AddScoped<ITranslationsRepository, TranslationsRepository>();
+
+// Контроллеры
 builder.Services.AddControllers();
 
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

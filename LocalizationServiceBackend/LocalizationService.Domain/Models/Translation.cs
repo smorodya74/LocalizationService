@@ -2,25 +2,18 @@
 {
     public class Translation
     {
-        public Translation(Guid localizationId, Guid languageId, string translationText)
+        public Translation(string languageCode, string translationText)
         {
-            Id = Guid.NewGuid();
-            LocalizationId = localizationId;
-            LanguageId = languageId;
+            LanguageCode = languageCode;
             TranslationText = translationText;
-            // IsEditing - уточнить по необходимости
         }
 
-        public Guid Id { get; }
-        public Guid LocalizationId { get; }
-        public Guid LanguageId { get; }
-        public string? TranslationText { get; private set; }
-        public bool IsEditing { get; private set; }
+        public string LanguageCode { get; }
+        public string TranslationText { get; private set; }
 
-        public void EditOpen() =>
-            IsEditing = true;
+        public void ChangeText(string newTranslation) => TranslationText = newTranslation;
 
-        public void EditClose() =>
-            IsEditing = false;
+        public static (Translation? translation, string? Error) CreateDB(string languageCode, string translationText)
+            => (new Translation(languageCode, translationText), null);
     }
 }
