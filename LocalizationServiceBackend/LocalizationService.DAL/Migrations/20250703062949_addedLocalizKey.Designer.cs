@@ -2,6 +2,7 @@
 using LocalizationService.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalizationService.DAL.Migrations
 {
     [DbContext(typeof(LocalizationServiceDbContext))]
-    partial class LocalizationServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250703062949_addedLocalizKey")]
+    partial class addedLocalizKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

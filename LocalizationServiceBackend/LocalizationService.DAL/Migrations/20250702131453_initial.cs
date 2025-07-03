@@ -38,7 +38,8 @@ namespace LocalizationService.DAL.Migrations
                         column: x => x.languageCode,
                         principalTable: "Languages",
                         principalColumn: "languageCode",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade,
+                        onUpdate: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
