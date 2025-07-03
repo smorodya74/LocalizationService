@@ -8,18 +8,18 @@ namespace LocalizationService.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<LanguageEntity> builder)
         {
-            builder.HasKey(l => l.Id);
+            builder.HasKey(l => l.LanguageCode);
 
-            builder.Property(l => l.LanguageKey)
+            builder.Property(l => l.LanguageCode)
                 .HasMaxLength(3)
                 .IsRequired();
+
+            builder.HasIndex(l => l.LanguageCode)
+                .IsUnique();
 
             builder.Property(l => l.Name)
                 .HasMaxLength(64)
                 .IsRequired();
-
-            builder.HasIndex(l => l.LanguageKey)
-                .IsUnique();
         }
     }
 }

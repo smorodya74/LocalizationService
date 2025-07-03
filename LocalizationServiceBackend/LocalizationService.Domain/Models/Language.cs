@@ -2,15 +2,29 @@
 {
     public class Language
     {
-        public Language(string languageKey, string name)
+        public Language(string languageCode, string name)
         {
-            Id = Guid.NewGuid();
-            LanguageKey = languageKey;
+            LanguageCode = languageCode;
             Name = name;
         }
 
-        public Guid Id { get; }
-        public string LanguageKey { get; }
+        public string LanguageCode { get; }
         public string Name { get; }
+
+        public static (Language language, string? error) CreateDB(
+                string languageCode,
+                string name)
+        {
+            try
+            {
+                var language = new Language(languageCode, name);
+
+                return (language, null);
+            }
+            catch (Exception ex)
+            {
+                return (null!, ex.Message);
+            }
+        }
     }
 }
