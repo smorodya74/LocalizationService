@@ -92,3 +92,4 @@ next-env.d.ts
 /.vs
 /LocalizationServiceBackend/.vs/LocalizationServiceBackend
 /*.drawio
+/LocalizationServiceBackend/.vs/ProjectEvaluation
