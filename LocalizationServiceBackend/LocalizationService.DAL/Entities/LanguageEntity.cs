@@ -1,14 +1,17 @@
-﻿namespace LocalizationService.DAL.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LocalizationService.DAL.Entities
 {
     /// <summary>
     ///     Справочник стран (языков)
-    ///     Например, "ru", "en"
+    ///     Например, "ru - Русский", "en - English"
     /// </summary>
     public class LanguageEntity
     {
-        public string LanguageCode { get; set; } = null!;
-        public string Name { get; set; } = null!;
+        public string LanguageCode { get; set; }
 
-        public ICollection<TranslationEntity> Translations { get; set; } = [];
+        public string Name { get; set; }
+
+        public ICollection<TranslationEntity> Translations { get; set; }
     }
 }

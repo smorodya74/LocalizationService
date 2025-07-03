@@ -5,7 +5,7 @@
     /// </summary>
     public class LocalizationKeyEntity
     {
-        public string? LocalizationKey { get; set; } = null!;
+        public string LocalizationKey { get; set; } = null!;
 
         public ICollection<TranslationEntity> Translations { get; set; } = [];
     }

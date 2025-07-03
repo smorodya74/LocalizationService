@@ -6,10 +6,11 @@
     public class TranslationEntity
     {
         public string LocalizationKey { get; set; } = null!;
+        public LocalizationKeyEntity Localization { get; set; } = null!;
 
         public string LanguageCode { get; set; } = null!;
         public LanguageEntity Language { get; set; } = null!;
 
-        public string TranslationText { get; set; }
+        public string TranslationText { get; set; } = string.Empty;
     }
 }

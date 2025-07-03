@@ -10,19 +10,16 @@ namespace LocalizationService.DAL.Configurations
         {
             builder.HasKey(t => new { t.LocalizationKey, t.LanguageCode });
 
-            builder.Property(t => t.LocalizationKey)
-                .HasMaxLength(256)
-                .IsRequired();
-
             builder.Property(t => t.TranslationText)
-                .HasColumnType("text");
+                .HasColumnType("text")
+                .IsRequired(false);
 
             builder.HasOne(t => t.Language)
                 .WithMany(l => l.Translations)
                 .HasForeignKey(t => t.LanguageCode)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne<LocalizationKeyEntity>()
+            builder.HasOne(t => t.Localization)
                 .WithMany(k => k.Translations)
                 .HasForeignKey(t => t.LocalizationKey)
                 .OnDelete(DeleteBehavior.Cascade);

@@ -57,14 +57,12 @@ namespace LocalizationService.DAL.Migrations
             modelBuilder.Entity("LocalizationService.DAL.Entities.TranslationEntity", b =>
                 {
                     b.Property<string>("LocalizationKey")
-                        .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("LanguageCode")
                         .HasColumnType("character varying(3)");
 
                     b.Property<string>("TranslationText")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("LocalizationKey", "LanguageCode");
@@ -82,13 +80,15 @@ namespace LocalizationService.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LocalizationService.DAL.Entities.LocalizationKeyEntity", null)
+                    b.HasOne("LocalizationService.DAL.Entities.LocalizationKeyEntity", "Localization")
                         .WithMany("Translations")
                         .HasForeignKey("LocalizationKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Language");
+
+                    b.Navigation("Localization");
                 });
 
             modelBuilder.Entity("LocalizationService.DAL.Entities.LanguageEntity", b =>

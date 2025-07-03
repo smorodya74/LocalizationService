@@ -1,19 +1,23 @@
-﻿namespace LocalizationService.Domain.Models
+﻿using LocalizationService.Domain.ValueObjects;
+
+namespace LocalizationService.Domain.Models
 {
     public class Translation
     {
-        public Translation(string languageCode, string translationText)
+        public Translation(LocalizationKey key, Language language, string? translationText)
         {
-            LanguageCode = languageCode;
+            LocalizationKey = key;
+            Language = language;
             TranslationText = translationText;
         }
 
-        public string LanguageCode { get; }
-        public string TranslationText { get; private set; }
+        public LocalizationKey LocalizationKey { get; }
+        public Language Language { get; }
+        public string? TranslationText { get; private set; }
 
-        public void ChangeText(string newTranslation) => TranslationText = newTranslation;
-
-        public static (Translation? translation, string? Error) CreateDB(string languageCode, string translationText)
-            => (new Translation(languageCode, translationText), null);
+        public void UpdateTranslationText(string? newText)
+        {
+            TranslationText = newText;
+        }
     }
 }

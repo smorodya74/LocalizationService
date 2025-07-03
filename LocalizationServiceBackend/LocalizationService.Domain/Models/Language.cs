@@ -9,22 +9,11 @@
         }
 
         public string LanguageCode { get; }
-        public string Name { get; }
+        public string Name { get; private set; }
 
-        public static (Language language, string? error) CreateDB(
-                string languageCode,
-                string name)
+        public void UpdateName(string newName)
         {
-            try
-            {
-                var language = new Language(languageCode, name);
-
-                return (language, null);
-            }
-            catch (Exception ex)
-            {
-                return (null!, ex.Message);
-            }
+            Name = newName;
         }
     }
 }

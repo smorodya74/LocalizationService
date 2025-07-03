@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalizationService.DAL.Migrations
 {
     [DbContext(typeof(LocalizationServiceDbContext))]
-    [Migration("20250702131453_initial")]
-    partial class initial
+    [Migration("20250703082803_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace LocalizationService.DAL.Migrations
 
             modelBuilder.Entity("LocalizationService.DAL.Entities.LanguageEntity", b =>
                 {
-                    b.Property<string>("languageCode")
+                    b.Property<string>("LanguageCode")
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)");
 
@@ -35,30 +35,42 @@ namespace LocalizationService.DAL.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.HasKey("languageCode");
+                    b.HasKey("LanguageCode");
 
-                    b.HasIndex("languageCode")
+                    b.HasIndex("LanguageCode")
                         .IsUnique();
 
                     b.ToTable("Languages");
                 });
 
-            modelBuilder.Entity("LocalizationService.DAL.Entities.TranslationEntity", b =>
+            modelBuilder.Entity("LocalizationService.DAL.Entities.LocalizationKeyEntity", b =>
                 {
                     b.Property<string>("LocalizationKey")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("languageCode")
+                    b.HasKey("LocalizationKey");
+
+                    b.HasIndex("LocalizationKey")
+                        .IsUnique();
+
+                    b.ToTable("LocalizationKeys");
+                });
+
+            modelBuilder.Entity("LocalizationService.DAL.Entities.TranslationEntity", b =>
+                {
+                    b.Property<string>("LocalizationKey")
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("LanguageCode")
                         .HasColumnType("character varying(3)");
 
                     b.Property<string>("TranslationText")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("LocalizationKey", "languageCode");
+                    b.HasKey("LocalizationKey", "LanguageCode");
 
-                    b.HasIndex("languageCode");
+                    b.HasIndex("LanguageCode");
 
                     b.ToTable("Translations");
                 });
@@ -67,14 +79,27 @@ namespace LocalizationService.DAL.Migrations
                 {
                     b.HasOne("LocalizationService.DAL.Entities.LanguageEntity", "Language")
                         .WithMany("Translations")
-                        .HasForeignKey("languageCode")
+                        .HasForeignKey("LanguageCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LocalizationService.DAL.Entities.LocalizationKeyEntity", "Localization")
+                        .WithMany("Translations")
+                        .HasForeignKey("LocalizationKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Language");
+
+                    b.Navigation("Localization");
                 });
 
             modelBuilder.Entity("LocalizationService.DAL.Entities.LanguageEntity", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("LocalizationService.DAL.Entities.LocalizationKeyEntity", b =>
                 {
                     b.Navigation("Translations");
                 });
