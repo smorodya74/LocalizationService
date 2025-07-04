@@ -1,5 +1,6 @@
 ﻿using LocalizationService.Application.Abstractions.Repositories;
 using LocalizationService.DAL.Entities;
+using LocalizationService.Domain.Models;
 using LocalizationService.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,17 +52,12 @@ namespace LocalizationService.DAL.Repositories
             return key.KeyName;
         }
 
-        public async Task<string> UpdateAsync(LocalizationKey key, string newKey)
+        public async Task UpdateAsync(LocalizationKey key)
         {
-            var entity = await _context.LocalizationKeys.FindAsync(key.KeyName);
-
-            if (entity != null)
-            {
-                entity.KeyName = newKey;
-                await _context.SaveChangesAsync();
-            }
-
-            return newKey;
+            await _context.LocalizationKeys
+                .Where(k => k.KeyName == key.KeyName)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(k => k.KeyName, k => key.KeyName));
         }
 
         public async Task<bool> DeleteAsync(LocalizationKey key)

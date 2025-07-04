@@ -9,7 +9,7 @@ namespace LocalizationService.Application.Abstractions.Repositories
         
         Task<string> CreateAsync(LocalizationKey key);
         
-        Task<string> UpdateAsync(LocalizationKey key, string newKey);
+        Task UpdateAsync(LocalizationKey key);
         
         Task<bool> DeleteAsync(LocalizationKey key);
     }

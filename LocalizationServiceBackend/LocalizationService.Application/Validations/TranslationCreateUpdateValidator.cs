@@ -3,7 +3,7 @@ using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Validations
 {
-    internal class TranslationCreateUpdateValidator : AbstractValidator<Translation>
+    public class TranslationCreateUpdateValidator : AbstractValidator<Translation>
     {
         public TranslationCreateUpdateValidator() 
         {
