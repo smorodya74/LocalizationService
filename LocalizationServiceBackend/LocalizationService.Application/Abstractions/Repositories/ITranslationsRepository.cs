@@ -7,11 +7,12 @@ namespace LocalizationService.Application.Abstractions.Repositories
     {
         Task<List<Translation>?> GetAllAsync();
         Task<List<Translation>?> GetByKeyAsync(LocalizationKey key);
-        Task<Translation?> GetByPairAsync(LocalizationKey key, string languageCode);
-        Task<List<Translation>?> GetByLanguageAsync(string languageCode);
-
+        Task<List<Translation>> SearchByKeyAsync(string query);
+        
         Task<string> CreateAsync(LocalizationKey key, Translation translation);
+        
         Task<string> UpdateAsync(LocalizationKey key, Translation translation);
+        
         Task<bool> DeleteAsync(LocalizationKey key);
     }
 }

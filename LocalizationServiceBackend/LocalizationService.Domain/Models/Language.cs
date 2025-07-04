@@ -11,9 +11,11 @@
         public string LanguageCode { get; }
         public string Name { get; private set; }
 
-        public void UpdateName(string newName)
+        public void UpdateName(string newName) => Name = newName;
+
+        public static (Language? Result, string? Error) CreateDB(string languageCode, string name)
         {
-            Name = newName;
+            return (new Language(languageCode, name), null);
         }
     }
 }

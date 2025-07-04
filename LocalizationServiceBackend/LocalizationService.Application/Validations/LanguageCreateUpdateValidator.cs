@@ -3,9 +3,9 @@ using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Validations
 {
-    public class LanguageValidator : AbstractValidator<Language>
+    public class LanguageCreateUpdateValidator : AbstractValidator<Language>
     {
-        public LanguageValidator() 
+        public LanguageCreateUpdateValidator() 
         {
             RuleFor(l => l.LanguageCode)
                 .NotEmpty().WithMessage("Код страны не может быть пустым")

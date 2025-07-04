@@ -3,9 +3,9 @@ using LocalizationService.Domain.ValueObjects;
 
 namespace LocalizationService.Application.Validations
 {
-    public class LocalizationKeyValidator : AbstractValidator<LocalizationKey>
+    public class LocalizationKeyCreateUpdateValidator : AbstractValidator<LocalizationKey>
     {
-        public LocalizationKeyValidator()
+        public LocalizationKeyCreateUpdateValidator()
         {
             RuleFor(k => k.KeyName)
                 .NotEmpty().WithMessage("Ключ не может быть пустым")

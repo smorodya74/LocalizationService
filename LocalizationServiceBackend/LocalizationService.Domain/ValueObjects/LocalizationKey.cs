@@ -8,4 +8,9 @@ public readonly record struct LocalizationKey
     }
 
     public string KeyName { get; }
+
+    public static (LocalizationKey? Result, string? Error) CreateDB(string keyName)
+    {
+        return (new LocalizationKey(keyName), null);
+    }
 }

@@ -3,9 +3,9 @@ using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Validations
 {
-    internal class TranslationValidator : AbstractValidator<Translation>
+    internal class TranslationCreateUpdateValidator : AbstractValidator<Translation>
     {
-        public TranslationValidator() 
+        public TranslationCreateUpdateValidator() 
         {
             RuleFor(t => t.TranslationText)
                 .MaximumLength(512).WithMessage("Текст перевода слишком длинный");

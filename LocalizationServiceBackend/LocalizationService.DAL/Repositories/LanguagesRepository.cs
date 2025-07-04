@@ -1,101 +1,64 @@
-﻿//using LocalizationService.Application.Abstractions.Repositories;
-//using LocalizationService.DAL.Entities;
-//using LocalizationService.Domain.Models;
-//using Microsoft.EntityFrameworkCore;
+﻿using LocalizationService.Application.Abstractions.Repositories;
+using LocalizationService.DAL.Entities;
+using LocalizationService.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
-//namespace LocalizationService.DAL.Repositories
-//{
-//    public class LanguagesRepository : ILanguagesRepository
-//    {
-//        private readonly LocalizationServiceDbContext _context;
-//        public LanguagesRepository(LocalizationServiceDbContext context) => _context = context;
+namespace LocalizationService.DAL.Repositories
+{
+    public class LanguagesRepository : ILanguagesRepository
+    {
+        private readonly LocalizationServiceDbContext _context;
+        public LanguagesRepository(LocalizationServiceDbContext context) => _context = context;
 
-//        public async Task<List<Language>?> GetAllAsync()
-//        {
-//            var userEntities = await _context.Languages
-//                .AsNoTracking()
-//                .ToListAsync();
+        public async Task<List<Language>?> GetAllAsync()
+        {
+            var languageEntities = await _context.Languages
+                .AsNoTracking()
+                .ToListAsync();
 
-//            var languages = new List<Language>();
+            var languages = new List<Language>();
 
-//            foreach (var userEntity in userEntities)
-//            {
-//                var (language, error) = Language.CreateDB(
-//                    userEntity.LanguageCode,
-//                    userEntity.Name
-//                );
+            foreach (var entity in languageEntities)
+            {
+                var (lang, _) = Language.CreateDB(entity.LanguageCode, entity.Name);
+                if (lang != null) languages.Add(lang);
+            }
 
-//                if (language != null)
-//                {
-//                    languages.Add(language);
-//                }
-//            }
-//            return languages;
-//        }
+            return languages;
+        }
 
-//        public async Task<Language?> GetByKeyAsync(string languageCode)
-//        {
-//            var languageEntity = await _context.Languages
-//                .AsNoTracking()
-//                .FirstOrDefaultAsync(u => u.LanguageCode == languageCode);
+        public async Task<string> CreateAsync(Language language)
+        {
+            var languageEntity = new LanguageEntity
+            {
+                LanguageCode = language.LanguageCode,
+                Name = language.Name
+            };
 
-//            if (languageEntity == null) return null;
+            await _context.Languages.AddAsync(languageEntity);
+            await _context.SaveChangesAsync();
 
-//            var (language, error) = Language.CreateDB(
-//                languageEntity.LanguageCode,
-//                languageEntity.Name);
+            return languageEntity.LanguageCode;
+        }
 
-//            return language;
-//        }
+        public async Task UpdateAsync(Language language)
+        {
+            await _context.Languages
+                .Where(l => l.LanguageCode == language.LanguageCode)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(l => l.Name, l => language.Name));
+        }
 
-//        public async Task<Language?> GetByNameAsync(string name)
-//        {
-//            var languageEntity = await _context.Languages
-//                .AsNoTracking()
-//                .FirstOrDefaultAsync(u => u.Name == name);
+        public async Task<bool> DeleteAsync(string languageCode)
+        {
+            var languageEntity = await _context.Languages.FindAsync(languageCode);
 
-//            if (languageEntity == null) return null;
+            if (languageEntity == null) return false;
 
-//            var (language, error) = Language.CreateDB(
-//                languageEntity.LanguageCode,
-//                languageEntity.Name);
+            _context.Languages.Remove(languageEntity);
+            await _context.SaveChangesAsync();
 
-//            return language;
-//        }
-
-
-//        public async Task<string> CreateAsync(Language language)
-//        {
-//            var languageEntity = new LanguageEntity
-//            {
-//                LanguageCode = language.LanguageCode,
-//                Name = language.Name
-//            };
-
-//            await _context.Languages.AddAsync(languageEntity);
-//            await _context.SaveChangesAsync();
-
-//            return languageEntity.LanguageCode;
-//        }
-
-//        public async Task UpdateAsync(Language language)
-//        {
-//            await _context.Languages
-//                .Where(l => l.LanguageCode == language.LanguageCode)
-//                .ExecuteUpdateAsync(s => s
-//                    .SetProperty(l => l.Name, l => language.Name));
-//        }
-
-//        public async Task<bool> DeleteAsync(string languageCode)
-//        {
-//            var languageEntity = await _context.Languages.FindAsync(languageCode);
-
-//            if(languageEntity == null) return false;
-
-//            _context.Languages.Remove(languageEntity);
-//            await _context.SaveChangesAsync();
-
-//            return true;
-//        }
-//    }
-//}
+            return true;
+        }
+    }
+}
