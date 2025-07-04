@@ -9,7 +9,7 @@ namespace LocalizationService.Application.Validations
         {
             RuleFor(l => l.LanguageCode)
                 .NotEmpty().WithMessage("Код страны не может быть пустым")
-                .Length(2, 3).WithMessage("Код языка не может соответствовать ISO 3166-1 (из букв)");
+                .Length(2, 3).WithMessage("Код языка должен быть из 2-3 символов (ISO 3166-1 формат)");
         }
     }
 }

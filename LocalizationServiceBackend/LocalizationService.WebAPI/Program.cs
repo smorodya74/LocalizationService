@@ -1,6 +1,10 @@
+using FluentValidation;
 using LocalizationService.Application.Abstractions.Repositories;
+using LocalizationService.Application.Services;
+using LocalizationService.Application.Validations;
 using LocalizationService.DAL;
-//using LocalizationService.DAL.Repositories;
+using LocalizationService.DAL.Repositories;
+using LocalizationService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,14 +15,17 @@ builder.Services.AddDbContext<LocalizationServiceDbContext>(options =>
         options.UseNpgsql(connectionString);
     });
 
-//builder.Services.AddScoped<ILanguagesRepository, LanguagesRepository>();
-//builder.Services.AddScoped<ILocalizationKeysRepository, LocalizationKeysRepository>();
-//builder.Services.AddScoped<ITranslationsRepository, TranslationsRepository>();
+builder.Services.AddScoped<LanguagesService>();
+builder.Services.AddScoped<ILanguagesRepository, LanguagesRepository>();
+builder.Services.AddScoped<IValidator<Language>, LanguageCreateUpdateValidator>();
 
-// Контроллеры
+builder.Services.AddScoped<ILocalizationKeysRepository, LocalizationKeysRepository>();
+
+builder.Services.AddScoped<ITranslationsRepository, TranslationsRepository>();
+
+
 builder.Services.AddControllers();
 
-// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

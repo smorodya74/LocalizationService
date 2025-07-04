@@ -6,13 +6,13 @@ public sealed class LocalizationKeyConfiguration : IEntityTypeConfiguration<Loca
 {
     public void Configure(EntityTypeBuilder<LocalizationKeyEntity> builder)
     {
-        builder.HasKey(k => k.LocalizationKey);
+        builder.HasKey(k => k.KeyName);
 
-        builder.Property(k => k.LocalizationKey)
+        builder.Property(k => k.KeyName)
             .HasMaxLength(256)
             .IsRequired();
 
-        builder.HasIndex(k => k.LocalizationKey)
+        builder.HasIndex(k => k.KeyName)
             .IsUnique();
     }
 }
