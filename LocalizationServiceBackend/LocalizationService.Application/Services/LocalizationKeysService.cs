@@ -18,7 +18,7 @@ namespace LocalizationService.Application.Services
         }
 
 
-        public async Task<List<LocalizationKey>> GetAllKeys()
+        public async Task<List<LocalizationKey>?> GetAllKeys()
         {
             return await _repository.GetAllAsync();
         }

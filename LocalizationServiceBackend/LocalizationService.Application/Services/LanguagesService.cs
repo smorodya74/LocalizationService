@@ -19,7 +19,7 @@ namespace LocalizationService.Application.Services
 
         }
 
-        public async Task<List<Language>> GetAllLanguages()
+        public async Task<List<Language>?> GetAllLanguages()
         {
             return await _repository.GetAllAsync();
         }
