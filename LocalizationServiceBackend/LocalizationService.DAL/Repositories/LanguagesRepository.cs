@@ -41,14 +41,6 @@ namespace LocalizationService.DAL.Repositories
             return languageEntity.LanguageCode;
         }
 
-        public async Task UpdateAsync(Language language)
-        {
-            await _context.Languages
-                .Where(l => l.LanguageCode == language.LanguageCode)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(l => l.Name, l => language.Name));
-        }
-
         public async Task<bool> DeleteAsync(string languageCode)
         {
             var languageEntity = await _context.Languages.FindAsync(languageCode);
@@ -59,6 +51,13 @@ namespace LocalizationService.DAL.Repositories
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> ExistsAsync(string languageCode)
+        {
+            return await _context.Languages
+                .AsNoTracking()
+                .AnyAsync(l => l.LanguageCode == languageCode);
         }
     }
 }

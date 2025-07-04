@@ -30,15 +30,11 @@ namespace LocalizationService.Application.Services
         {
             await _validator.ValidateAndThrowAsync(langValid, ct);
 
-            return await _repository.CreateAsync(langValid);
-        }
+            //if (await _repository.ExistsAsync(langValid.LanguageCode))
+            //    throw new ValidationException(
+            //        $"Язык с кодом '{langValid.LanguageCode}' уже существует");
 
-        public async Task UpdateLanguage(
-            Language langValid,
-            CancellationToken ct = default)
-        {
-            await _validator.ValidateAndThrowAsync(langValid, ct);
-            await _repository.UpdateAsync(langValid);
+            return await _repository.CreateAsync(langValid);
         }
 
         public async Task<bool> DeleteLangugage(string languageCode)

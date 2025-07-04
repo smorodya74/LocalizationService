@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\LocalizationService.Application\LocalizationService.Application.csproj" />
     <ProjectReference Include="..\LocalizationService.DAL\LocalizationService.DAL.csproj" />
   </ItemGroup>

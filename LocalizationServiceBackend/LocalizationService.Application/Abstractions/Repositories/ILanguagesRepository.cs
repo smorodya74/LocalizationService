@@ -8,8 +8,8 @@ namespace LocalizationService.Application.Abstractions.Repositories
         
         Task<string> CreateAsync(Language language);
         
-        Task UpdateAsync(Language language);
-        
         Task<bool> DeleteAsync(string languageCode);
+
+        Task<bool> ExistsAsync(string languageCode);
     }
 }
