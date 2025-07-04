@@ -1,7 +1,6 @@
 ﻿using LocalizationService.Application.Abstractions.Repositories;
 using LocalizationService.DAL.Entities;
 using LocalizationService.Domain.Models;
-using LocalizationService.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocalizationService.DAL.Repositories
@@ -11,11 +10,11 @@ namespace LocalizationService.DAL.Repositories
         private readonly LocalizationServiceDbContext _context;
         public LocalizationKeysRepository(LocalizationServiceDbContext context) => _context = context;
 
-        public async Task<List<LocalizationKey>?> GetAllAsync()
+        public async Task<List<LocalizationKey>?> GetAllAsync(CancellationToken ct)
         {
             var keysEntities = await _context.LocalizationKeys
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(ct);
 
             var keys = new List<LocalizationKey>();
 
@@ -52,14 +51,6 @@ namespace LocalizationService.DAL.Repositories
             return key.KeyName;
         }
 
-        public async Task UpdateAsync(LocalizationKey key)
-        {
-            await _context.LocalizationKeys
-                .Where(k => k.KeyName == key.KeyName)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(k => k.KeyName, k => key.KeyName));
-        }
-
         public async Task<bool> DeleteAsync(LocalizationKey key)
         {
             var lkey = await _context.LocalizationKeys.FindAsync(key.KeyName);
@@ -68,6 +59,13 @@ namespace LocalizationService.DAL.Repositories
             _context.LocalizationKeys.Remove(lkey);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> ExistsAsync(string localizationKey)
+        {
+            return await _context.LocalizationKeys
+                .AsNoTracking()
+                .AnyAsync(k => k.KeyName == localizationKey);
         }
     }
 }

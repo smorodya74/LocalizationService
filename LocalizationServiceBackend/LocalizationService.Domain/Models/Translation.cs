@@ -1,6 +1,4 @@
-﻿using LocalizationService.Domain.ValueObjects;
-
-namespace LocalizationService.Domain.Models
+﻿namespace LocalizationService.Domain.Models
 {
     public class Translation
     {

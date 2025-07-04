@@ -10,11 +10,11 @@ namespace LocalizationService.DAL.Repositories
         private readonly LocalizationServiceDbContext _context;
         public LanguagesRepository(LocalizationServiceDbContext context) => _context = context;
 
-        public async Task<List<Language>?> GetAllAsync()
+        public async Task<List<Language>?> GetAllAsync(CancellationToken ct)
         {
             var languageEntities = await _context.Languages
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(ct);
 
             var languages = new List<Language>();
 

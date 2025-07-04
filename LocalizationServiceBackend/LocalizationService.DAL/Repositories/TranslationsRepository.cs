@@ -1,7 +1,6 @@
 ﻿using LocalizationService.Application.Abstractions.Repositories;
 using LocalizationService.DAL.Entities;
 using LocalizationService.Domain.Models;
-using LocalizationService.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocalizationService.DAL.Repositories

@@ -19,9 +19,9 @@ namespace LocalizationService.Application.Services
 
         }
 
-        public async Task<List<Language>?> GetAllLanguages()
+        public async Task<List<Language>?> GetAllLanguages(CancellationToken ct)
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAllAsync(ct);
         }
 
         public async Task<string> CreateLanguage(
@@ -29,10 +29,6 @@ namespace LocalizationService.Application.Services
             CancellationToken ct = default)
         {
             await _validator.ValidateAndThrowAsync(langValid, ct);
-
-            //if (await _repository.ExistsAsync(langValid.LanguageCode))
-            //    throw new ValidationException(
-            //        $"Язык с кодом '{langValid.LanguageCode}' уже существует");
 
             return await _repository.CreateAsync(langValid);
         }

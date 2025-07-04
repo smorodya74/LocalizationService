@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using LocalizationService.Application.Abstractions.Repositories;
-using LocalizationService.Domain.ValueObjects;
+using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Services
 {
@@ -18,9 +18,9 @@ namespace LocalizationService.Application.Services
         }
 
 
-        public async Task<List<LocalizationKey>?> GetAllKeys()
+        public async Task<List<LocalizationKey>?> GetAllKeys(CancellationToken ct)
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAllAsync(ct);
         }
 
         public async Task<List<LocalizationKey>> SearchKey(
@@ -37,14 +37,6 @@ namespace LocalizationService.Application.Services
             await _validator.ValidateAndThrowAsync(keyValid, ct);
 
             return await _repository.CreateAsync(keyValid);
-        }
-
-        public async Task UpdateKey(
-            LocalizationKey keyValid,
-            CancellationToken ct = default)
-        {
-            await _validator.ValidateAndThrowAsync(keyValid, ct);
-            await _repository.UpdateAsync(keyValid);
         }
 
         public async Task<bool> DeleteKey(LocalizationKey key)

@@ -16,13 +16,13 @@ namespace LocalizationService.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Language>>> GetAllLanguages(CancellationToken ct)
         {
-            return Ok(await _service.GetAllLanguages());
+            return Ok(await _service.GetAllLanguages(ct));
         }
 
         [HttpGet("{langCode}")]
         public async Task<IActionResult> GetLanguageByCode(string langCode, CancellationToken ct)
         {
-            var lang = (await _service.GetAllLanguages())
+            var lang = (await _service.GetAllLanguages(ct))
                 .FirstOrDefault(l => l.LanguageCode == langCode);
 
             return (lang != null) ? Ok(lang) : NotFound();

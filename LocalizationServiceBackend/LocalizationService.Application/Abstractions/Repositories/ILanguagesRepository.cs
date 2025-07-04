@@ -4,7 +4,7 @@ namespace LocalizationService.Application.Abstractions.Repositories
 {
     public interface ILanguagesRepository
     {
-        Task<List<Language>?> GetAllAsync();
+        Task<List<Language>?> GetAllAsync(CancellationToken ct);
         
         Task<string> CreateAsync(Language language);
         

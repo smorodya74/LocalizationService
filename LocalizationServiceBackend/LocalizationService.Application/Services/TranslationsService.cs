@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using LocalizationService.Application.Abstractions.Repositories;
 using LocalizationService.Domain.Models;
-using LocalizationService.Domain.ValueObjects;
 
 namespace LocalizationService.Application.Services
 {

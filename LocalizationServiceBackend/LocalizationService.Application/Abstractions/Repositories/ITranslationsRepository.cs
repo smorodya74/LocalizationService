@@ -1,5 +1,4 @@
 ﻿using LocalizationService.Domain.Models;
-using LocalizationService.Domain.ValueObjects;
 
 namespace LocalizationService.Application.Abstractions.Repositories
 {

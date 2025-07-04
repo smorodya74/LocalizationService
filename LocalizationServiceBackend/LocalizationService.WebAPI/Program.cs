@@ -5,7 +5,6 @@ using LocalizationService.Application.Validations;
 using LocalizationService.DAL;
 using LocalizationService.DAL.Repositories;
 using LocalizationService.Domain.Models;
-using LocalizationService.Domain.ValueObjects;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +22,7 @@ builder.Services.AddScoped<IValidator<Language>, LanguageCreateValidator>();
 
 builder.Services.AddScoped<LocalizationKeysService>();
 builder.Services.AddScoped<ILocalizationKeysRepository, LocalizationKeysRepository>();
-builder.Services.AddScoped<IValidator<LocalizationKey>, LocalizationKeyCreateUpdateValidator>();
+builder.Services.AddScoped<IValidator<LocalizationKey>, LocalizationKeyCreateValidator>();
 
 builder.Services.AddScoped<TranslationsService>();
 builder.Services.AddScoped<ITranslationsRepository, TranslationsRepository>();

@@ -1,5 +1,4 @@
 ﻿using LocalizationService.DAL.Entities;
-using LocalizationService.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocalizationService.DAL
