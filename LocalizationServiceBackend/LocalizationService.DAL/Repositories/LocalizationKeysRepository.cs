@@ -27,12 +27,12 @@ namespace LocalizationService.DAL.Repositories
             return keys;
         }
 
-        public async Task<List<LocalizationKey>> SearchAsync(string query)
+        public async Task<List<LocalizationKey>> SearchAsync(string query, CancellationToken ct)
         {
             var localizationKeyEntities = await _context.LocalizationKeys
                 .AsNoTracking()
                 .Where(k =>
-                    EF.Functions.ILike(k.KeyName, $"%{query}%")).ToListAsync();
+                    EF.Functions.ILike(k.KeyName, $"%{query}%")).ToListAsync(ct);
 
             return localizationKeyEntities
                 .Select(k => LocalizationKey.CreateDB(k.KeyName).Result)
@@ -41,23 +41,23 @@ namespace LocalizationService.DAL.Repositories
                 .ToList();
         }
 
-        public async Task<string> CreateAsync(LocalizationKey key)
+        public async Task<string> CreateAsync(LocalizationKey key, CancellationToken ct)
         {
             var entity = new LocalizationKeyEntity { KeyName = key.KeyName };
 
-            await _context.LocalizationKeys.AddAsync(entity);
+            await _context.LocalizationKeys.AddAsync(entity, ct);
             await _context.SaveChangesAsync();
 
             return key.KeyName;
         }
 
-        public async Task<bool> DeleteAsync(LocalizationKey key)
+        public async Task<bool> DeleteAsync(LocalizationKey key, CancellationToken ct)
         {
             var lkey = await _context.LocalizationKeys.FindAsync(key.KeyName);
             if (lkey == null) return false;
 
             _context.LocalizationKeys.Remove(lkey);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(ct);
             return true;
         }
 

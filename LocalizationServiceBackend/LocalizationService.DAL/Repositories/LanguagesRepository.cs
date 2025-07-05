@@ -27,7 +27,7 @@ namespace LocalizationService.DAL.Repositories
             return languages;
         }
 
-        public async Task<string> CreateAsync(Language language)
+        public async Task<string> CreateAsync(Language language, CancellationToken ct)
         {
             var languageEntity = new LanguageEntity
             {
@@ -35,7 +35,7 @@ namespace LocalizationService.DAL.Repositories
                 Name = language.Name
             };
 
-            await _context.Languages.AddAsync(languageEntity);
+            await _context.Languages.AddAsync(languageEntity, ct);
             await _context.SaveChangesAsync();
 
             return languageEntity.LanguageCode;

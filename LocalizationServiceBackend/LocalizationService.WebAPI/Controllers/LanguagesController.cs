@@ -39,7 +39,7 @@ namespace LocalizationService.WebAPI.Controllers
         [HttpDelete("{langCode}")]
         public async Task<IActionResult> Delete(string langCode, CancellationToken ct)
         {
-            var response = await _service.DeleteLangugage(langCode);
+            var response = await _service.DeleteLangugage(langCode, ct);
 
             return response ? Ok() : NotFound();
         }

@@ -6,7 +6,7 @@ namespace LocalizationService.Application.Abstractions.Repositories
     {
         Task<List<Language>?> GetAllAsync(CancellationToken ct);
         
-        Task<string> CreateAsync(Language language);
+        Task<string> CreateAsync(Language language, CancellationToken ct);
         
         Task<bool> DeleteAsync(string languageCode);
 

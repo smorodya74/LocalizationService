@@ -32,9 +32,9 @@ namespace LocalizationService.WebAPI.Controllers
         }
 
         [HttpDelete("{key}")]
-        public async Task<IActionResult> DeleteLocalizationKey(LocalizationKey key)
+        public async Task<IActionResult> DeleteLocalizationKey(LocalizationKey key, CancellationToken ct)
         {
-            await _service.DeleteKey(key);
+            await _service.DeleteKey(key, ct);
             return NoContent();
         }
     }

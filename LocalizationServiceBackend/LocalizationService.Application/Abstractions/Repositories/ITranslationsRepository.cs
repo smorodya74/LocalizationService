@@ -4,14 +4,17 @@ namespace LocalizationService.Application.Abstractions.Repositories
 {
     public interface ITranslationsRepository
     {
-        Task<List<Translation>?> GetAllAsync();
-        Task<List<Translation>?> GetByKeyAsync(LocalizationKey key);
-        Task<List<Translation>> SearchByKeyAsync(string query);
+        Task<List<Translation>?> GetAllAsync(CancellationToken ct);
+        Task<List<Translation>?> GetByKeyAsync(LocalizationKey key, CancellationToken ct);
+        Task<List<Translation>> SearchByKeyAsync(string query, CancellationToken ct);
         
-        Task<string> CreateAsync(LocalizationKey key, Translation translation);
+        Task<string> CreateForNewKeyAsync(string keyName, IEnumerable<string> languageCodes, CancellationToken ct = default);
+        Task<string> CreateForNewLanguageAsync(string languageCode, IEnumerable<string> allKeys, CancellationToken ct = default);
+
+
+        Task<string> UpdateAsync(LocalizationKey key, Translation translation, CancellationToken ct);
         
-        Task<string> UpdateAsync(LocalizationKey key, Translation translation);
-        
-        Task<bool> DeleteAsync(LocalizationKey key);
+        Task<bool> DeleteByKeyAsync(LocalizationKey key, CancellationToken ct);
+        Task<bool> DeleteByLanguageAsync(string languageCode, CancellationToken ct);
     }
 }

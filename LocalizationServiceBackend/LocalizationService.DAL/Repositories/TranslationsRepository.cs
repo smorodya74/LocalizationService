@@ -10,12 +10,12 @@ namespace LocalizationService.DAL.Repositories
         private readonly LocalizationServiceDbContext _context;
         public TranslationsRepository(LocalizationServiceDbContext context) => _context = context;
 
-        public async Task<List<Translation>?> GetAllAsync()
+        public async Task<List<Translation>?> GetAllAsync(CancellationToken ct)
         {
             var translationEntities = await _context.Translations
                 .AsNoTracking()
                 .Include(t => t.Language)
-                .ToListAsync();
+                .ToListAsync(ct);
 
             var translations = new List<Translation>();
 
@@ -35,13 +35,13 @@ namespace LocalizationService.DAL.Repositories
             return translations;
         }
 
-        public async Task<List<Translation>> SearchByKeyAsync(string query)
+        public async Task<List<Translation>> SearchByKeyAsync(string query, CancellationToken ct)
         {
             var translationEntities = await _context.Translations
                 .AsNoTracking()
                 .Include(t => t.Language)
                 .Where(t => EF.Functions.ILike(t.LocalizationKey, $"%{query}%"))
-                .ToListAsync();
+                .ToListAsync(ct);
 
             var translations = new List<Translation>();
 
@@ -61,13 +61,13 @@ namespace LocalizationService.DAL.Repositories
             return translations;
         }
 
-        public async Task<List<Translation>?> GetByKeyAsync(LocalizationKey key)
+        public async Task<List<Translation>?> GetByKeyAsync(LocalizationKey key, CancellationToken ct)
         {
             var translationEntities = await _context.Translations
                 .AsNoTracking()
                 .Where(t => t.LocalizationKey == key.KeyName)
                 .Include(t => t.Language)
-                .ToListAsync();
+                .ToListAsync(ct);
 
             var translations = new List<Translation>();
 
@@ -86,41 +86,27 @@ namespace LocalizationService.DAL.Repositories
             return translations;
         }
 
-        public async Task<string> CreateAsync(LocalizationKey key, Translation translation)
-        {
-            var translationEntity = new TranslationEntity
-            {
-                LocalizationKey = key.KeyName,
-                LanguageCode = translation.Language.LanguageCode,
-                TranslationText = translation.TranslationText ?? string.Empty
-            };
-
-            await _context.Translations.AddAsync(translationEntity);
-            await _context.SaveChangesAsync();
-
-            return key.KeyName;
-        }
-
-        public async Task<string> UpdateAsync(LocalizationKey key, Translation translation)
+        public async Task<string> UpdateAsync(LocalizationKey key, Translation translation, CancellationToken ct)
         {
             var translationEntity = await _context.Translations.FindAsync(
                 key.KeyName,
-                translation.Language.LanguageCode);
+                translation.Language.LanguageCode,
+                ct);
 
             if (translationEntity != null)
             {
                 translationEntity.TranslationText = translation.TranslationText ?? string.Empty;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
             }
 
             return key.KeyName;
         }
 
-        public async Task<bool> DeleteAsync(LocalizationKey key)
+        public async Task<bool> DeleteByKeyAsync(LocalizationKey key, CancellationToken ct)
         {
             var translationEntities = await _context.Translations
                 .Where(t => t.LocalizationKey == key.KeyName)
-                .ToListAsync();
+                .ToListAsync(ct);
 
             if (translationEntities.Count == 0)
                 return false;
@@ -130,5 +116,57 @@ namespace LocalizationService.DAL.Repositories
 
             return true;
         }
+
+        public async Task<bool> DeleteByLanguageAsync(string languageCode, CancellationToken ct)
+        {
+            var translationEntities = await _context.Translations
+                .Where(t => t.LanguageCode == languageCode)
+                .ToListAsync(ct);
+
+            if (translationEntities.Count == 0)
+                return false;
+
+            _context.Translations.RemoveRange(translationEntities);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<string> CreateForNewKeyAsync(
+            string keyName,
+            IEnumerable<string> languageCodes,
+            CancellationToken ct = default)
+        {
+            var entities = languageCodes.Select(code => new TranslationEntity
+            {
+                LocalizationKey = keyName,
+                LanguageCode = code,
+                TranslationText = string.Empty
+            });
+
+            await _context.Translations.AddRangeAsync(entities, ct);
+            await _context.SaveChangesAsync(ct);
+
+            return keyName;
+        }
+
+        public async Task<string> CreateForNewLanguageAsync(
+            string languageCode,
+            IEnumerable<string> allKeys,
+            CancellationToken ct = default)
+        {
+            var entities = allKeys.Select(key => new TranslationEntity
+            {
+                LocalizationKey = key,
+                LanguageCode = languageCode,
+                TranslationText = string.Empty
+            });
+
+            await _context.Translations.AddRangeAsync(entities, ct);
+            await _context.SaveChangesAsync(ct);
+
+            return languageCode;
+        }
+
     }
 }

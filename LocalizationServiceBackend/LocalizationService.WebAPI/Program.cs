@@ -26,7 +26,7 @@ builder.Services.AddScoped<IValidator<LocalizationKey>, LocalizationKeyCreateVal
 
 builder.Services.AddScoped<TranslationsService>();
 builder.Services.AddScoped<ITranslationsRepository, TranslationsRepository>();
-builder.Services.AddScoped<IValidator<Translation>, TranslationCreateUpdateValidator>();
+builder.Services.AddScoped<IValidator<Translation>, TranslationUpdateValidator>();
 
 
 builder.Services.AddControllers();

@@ -17,29 +17,21 @@ namespace LocalizationService.Application.Services
             _validator = translationValidator;
         }
 
-        public async Task<List<Translation>?> GetAllTranslations()
+        public async Task<List<Translation>?> GetAllTranslations(CancellationToken ct)
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAllAsync(ct);
         }
 
-        public async Task<List<Translation>?> GetTranslationsByKey(LocalizationKey key)
+        public async Task<List<Translation>?> GetTranslationsByKey(
+            LocalizationKey key,
+            CancellationToken ct)
         {
-            return await _repository.GetByKeyAsync(key);
+            return await _repository.GetByKeyAsync(key, ct);
         }
 
-        public async Task<List<Translation>> SearchTranslationsByKey(string query)
+        public async Task<List<Translation>> SearchTranslationsByKey(string query, CancellationToken ct)
         {
-            return await _repository.SearchByKeyAsync(query);
-        }
-
-        public async Task<string> CreateTranslation(
-            LocalizationKey key, 
-            Translation translation,
-            CancellationToken ct = default)
-        {
-            await _validator.ValidateAndThrowAsync(translation, ct);
-
-            return await _repository.CreateAsync(key, translation);
+            return await _repository.SearchByKeyAsync(query, ct);
         }
 
         public async Task<string> UpdateTranslation(
@@ -49,12 +41,7 @@ namespace LocalizationService.Application.Services
         {
             await _validator.ValidateAndThrowAsync(translation, ct);
 
-            return await _repository.UpdateAsync(key, translation);
-        }
-
-        public async Task<bool> DeleteTranslation(LocalizationKey key)
-        {
-            return await _repository.DeleteAsync(key);
+            return await _repository.UpdateAsync(key, translation, ct);
         }
     }
 }

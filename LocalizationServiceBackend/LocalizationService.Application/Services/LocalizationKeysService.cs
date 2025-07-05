@@ -7,13 +7,19 @@ namespace LocalizationService.Application.Services
     public class LocalizationKeysService
     {
         private readonly ILocalizationKeysRepository _repository;
+        private readonly ILanguagesRepository _langRepository;
+        private readonly ITranslationsRepository _translationsRepository;
         private readonly IValidator<LocalizationKey> _validator;
 
         public LocalizationKeysService(
             ILocalizationKeysRepository keysRepository,
+            ILanguagesRepository languagesRepository,
+            ITranslationsRepository translationsRepository,
             IValidator<LocalizationKey> keyValidator)
         {
             _repository = keysRepository;
+            _langRepository = languagesRepository;
+            _translationsRepository = translationsRepository;
             _validator = keyValidator;
         }
 
@@ -27,7 +33,7 @@ namespace LocalizationService.Application.Services
             string querry,
             CancellationToken ct = default)
         {
-            return await _repository.SearchAsync(querry);
+            return await _repository.SearchAsync(querry, ct);
         }
 
         public async Task<string> CreateKey(
@@ -36,12 +42,20 @@ namespace LocalizationService.Application.Services
         {
             await _validator.ValidateAndThrowAsync(keyValid, ct);
 
-            return await _repository.CreateAsync(keyValid);
+            var keyName = await _repository.CreateAsync(keyValid, ct);
+            var languageCodes = (await _langRepository.GetAllAsync(ct))
+                .Select(l => l.LanguageCode);
+
+            await _translationsRepository.CreateForNewKeyAsync(keyName, languageCodes, ct);
+
+            return keyName;
         }
 
-        public async Task<bool> DeleteKey(LocalizationKey key)
+        public async Task<bool> DeleteKey(LocalizationKey key, CancellationToken ct)
         {
-            return await _repository.DeleteAsync(key);
+            await _translationsRepository.DeleteByKeyAsync(key, ct);
+
+            return await _repository.DeleteAsync(key, ct);
         }
     }
 }
