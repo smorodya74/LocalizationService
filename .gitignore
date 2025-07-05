@@ -93,6 +93,7 @@ next-env.d.ts
 /LocalizationServiceBackend/.vs/LocalizationServiceBackend
 /*.drawio
 /LocalizationServiceBackend/.vs/ProjectEvaluation
+
 localizationfrontend/.next
 localizationfrontend/.vscode
 /localizationfrontend/node_modules*

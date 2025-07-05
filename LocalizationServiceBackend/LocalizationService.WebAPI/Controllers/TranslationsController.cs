@@ -1,7 +1,7 @@
-﻿using LocalizationService.Application.Services;
+﻿using LocalizationService.Application.Models;
+using LocalizationService.Application.Services;
+using LocalizationService.DAL.DTO.TranslationDTO;
 using LocalizationService.Domain.Models;
-using LocalizationService.WebAPI.DTOs.TranslationDTO;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocalizationService.WebAPI.Controllers
@@ -13,10 +13,14 @@ namespace LocalizationService.WebAPI.Controllers
         private readonly TranslationsService _service;
         public TranslationsController(TranslationsService service) => _service = service;
 
-        [HttpGet]
-        public async Task<ActionResult<List<Translation>>> GetAllTranslations(CancellationToken ct)
+        [HttpGet("page")]
+        public async Task<ActionResult<PagedResult<Translation>>> GetPage(
+            [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 10, 
+            CancellationToken ct = default)
         {
-            return Ok(await _service.GetAllTranslations(ct));
+            var result = await _service.GetTranslationsPBP(page, pageSize, ct);
+            return Ok(result);
         }
 
         [HttpGet("{key}")]

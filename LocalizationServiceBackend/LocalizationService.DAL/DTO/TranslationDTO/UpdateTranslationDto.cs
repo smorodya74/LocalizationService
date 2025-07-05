@@ -1,4 +1,4 @@
-﻿namespace LocalizationService.WebAPI.DTOs.TranslationDTO
+﻿namespace LocalizationService.DAL.DTO.TranslationDTO
 {
     public record UpdateTranslationDto(
     string LocalizationKey,
