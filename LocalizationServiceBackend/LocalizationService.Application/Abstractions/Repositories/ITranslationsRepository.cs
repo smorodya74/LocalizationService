@@ -1,12 +1,13 @@
-﻿using LocalizationService.Domain.Models;
+﻿using LocalizationService.Application.Models;
+using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Abstractions.Repositories
 {
     public interface ITranslationsRepository
     {
-        Task<List<Translation>?> GetAllAsync(CancellationToken ct);
         Task<List<Translation>?> GetByKeyAsync(LocalizationKey key, CancellationToken ct);
         Task<List<Translation>> SearchByKeyAsync(string query, CancellationToken ct);
+        Task<PagedResult<Translation>> GetTranslationsPBP(int page, int pageSize, CancellationToken ct = default);
         
         Task<string> CreateForNewKeyAsync(string keyName, IEnumerable<string> languageCodes, CancellationToken ct = default);
         Task<string> CreateForNewLanguageAsync(string languageCode, IEnumerable<string> allKeys, CancellationToken ct = default);
