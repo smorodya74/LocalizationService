@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LocalizationService.Application.Abstractions.Repositories;
+using LocalizationService.Application.Models;
 using LocalizationService.Domain.Models;
 
 namespace LocalizationService.Application.Services
@@ -17,9 +18,9 @@ namespace LocalizationService.Application.Services
             _validator = translationValidator;
         }
 
-        public async Task<List<Translation>?> GetAllTranslations(CancellationToken ct)
+        public async Task<PagedResult<Translation>> GetTranslationsPBP(int page, int pageSize, CancellationToken ct)
         {
-            return await _repository.GetAllAsync(ct);
+            return await _repository.GetTranslationsPBP(page, pageSize, ct);
         }
 
         public async Task<List<Translation>?> GetTranslationsByKey(
