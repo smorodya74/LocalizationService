@@ -1,47 +1,76 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { Table, Input, Pagination, Spin, message } from 'antd';
-import { fetchTranslationsPage } from '@/app/lib/API';
+import { Table, Pagination, Spin, message, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import Search from 'antd/es/input/Search';
 import axios from 'axios';
 
-// 👇 описываем пропы, которые действительно нужны компоненту
+import AddKeyModal       from '@/app/Components/AddKeyModal';
+import AddLanguageModal  from '@/app/Components/AddLanguageModal';
+import { fetchTranslationsPage } from '@/app/lib/API';
+
 export interface TranslationTableProps {
-  /** Кол‑во строк на странице (по умолчанию 10) */
   pageSize?: number;
 }
 
 interface Row {
   keyName: string;
-  [langCode: string]: string | undefined;   // eng, ru …
+  [langCode: string]: string | undefined;
 }
 
 export default function TranslationTable({ pageSize = 10 }: TranslationTableProps) {
-  const [rows, setRows] = useState<Row[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage]   = useState(1);
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [columns, setColumns] = useState<any[]>([
-    { title: 'Ключ', dataIndex: 'keyName', fixed: 'left', width: 200 }
-  ]);
+  const [rows, setRows]         = useState<Row[]>([]);
+  const [total, setTotal]       = useState(0);
+  const [page, setPage]         = useState(1);
+  const [search, setSearch]     = useState('');
+  const [loading, setLoading]   = useState(false);
+  const [columns, setColumns]   = useState<any[]>([]);
 
-  /** Загружаем список языков один раз */
+  const [isAddKeyOpen,  setAddKeyOpen]  = useState(false);
+  const [isAddLangOpen, setAddLangOpen] = useState(false);
+
   const loadLanguages = useCallback(async () => {
     try {
       const { data } = await axios.get('http://localhost:5172/api/languages');
+
       const langCols = data.map((l: any) => ({
         title: l.name,
         dataIndex: l.languageCode,
         width: 150,
+        render: (text: string) => text ?? ''
       }));
-      setColumns(prev => [...prev, ...langCols]);
+
+      setColumns([
+        {
+          title: 'Ключ',
+          dataIndex: 'keyName',
+          width: 200,
+          fixed: 'left'
+        },
+        ...langCols,
+        {
+          title: (
+            <Button
+              type="link"
+              icon={<PlusOutlined />}
+              onClick={() => setAddLangOpen(true)}
+              style={{ padding: 0 }}
+            >
+              Add&nbsp;Language
+            </Button>
+          ),
+          dataIndex: '__addLang',
+          width: 160,
+          fixed: 'right',
+          render: () => '-'
+        }
+      ]);
     } catch {
       message.error('Не удалось получить список языков');
     }
   }, []);
 
-  /** Загружаем одну страницу переводов */
   const loadPage = useCallback(async () => {
     setLoading(true);
     try {
@@ -54,7 +83,7 @@ export default function TranslationTable({ pageSize = 10 }: TranslationTableProp
         map.get(k)![t.language.languageCode] = t.translationText ?? '';
       });
 
-      setRows(Array.from(map.values()));
+      setRows([...map.values()]);
       setTotal(res.totalCount);
     } catch {
       message.error('Ошибка загрузки переводов');
@@ -63,18 +92,17 @@ export default function TranslationTable({ pageSize = 10 }: TranslationTableProp
     }
   }, [page, pageSize, search]);
 
-  /* Первичная загрузка */
   useEffect(() => { loadLanguages(); }, [loadLanguages]);
   useEffect(() => { loadPage(); }, [loadPage]);
 
   return (
     <div style={{ padding: 24 }}>
-      <Input.Search
+      <Search
         placeholder="Поиск по ключу…"
         allowClear
         enterButton
         style={{ maxWidth: 400, marginBottom: 16 }}
-        onSearch={(val) => { setPage(1); setSearch(val); }}
+        onSearch={val => { setPage(1); setSearch(val); }}
       />
 
       <Spin spinning={loading}>
@@ -85,6 +113,15 @@ export default function TranslationTable({ pageSize = 10 }: TranslationTableProp
           pagination={false}
           scroll={{ x: 'max-content' }}
           size="middle"
+          footer={() => (
+            <Button
+              type="link"
+              icon={<PlusOutlined />}
+              onClick={() => setAddKeyOpen(true)}
+            >
+              Add Key
+            </Button>
+          )}
         />
       </Spin>
 
@@ -94,7 +131,20 @@ export default function TranslationTable({ pageSize = 10 }: TranslationTableProp
         pageSize={pageSize}
         total={total}
         onChange={setPage}
-        showSizeChanger={false}
+        showSizeChanger={true}
+        align="end"
+      />
+
+      <AddKeyModal
+        open={isAddKeyOpen}
+        onClose={() => setAddKeyOpen(false)}
+        onSuccess={() => { setPage(1); loadPage(); }}
+      />
+
+      <AddLanguageModal
+        open={isAddLangOpen}
+        onClose={() => setAddLangOpen(false)}
+        onSuccess={() => { loadLanguages(); setPage(1); loadPage(); }}
       />
     </div>
   );
