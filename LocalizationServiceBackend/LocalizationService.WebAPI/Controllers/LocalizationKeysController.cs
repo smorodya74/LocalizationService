@@ -11,18 +11,6 @@ namespace LocalizationService.WebAPI.Controllers
         private readonly LocalizationKeysService _service;
         public LocalizationKeysController(LocalizationKeysService service) => _service = service;
 
-        [HttpGet]
-        public async Task<ActionResult<List<LocalizationKey>>> GetAllKeys(CancellationToken ct)
-        {
-            return Ok(await _service.GetAllKeys(ct));
-        }
-
-        [HttpGet("{query}")]
-        public async Task<ActionResult<List<LocalizationKey>>> SearchKeys(string query, CancellationToken ct)
-        {
-            return Ok(await _service.SearchKey(query, ct));
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateLocalizationKey([FromBody] LocalizationKey key, CancellationToken ct)
         {

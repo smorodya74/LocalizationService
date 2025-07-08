@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+.add-key-row td {
+    cursor: pointer;
+    color: var(--ant-primary-color);
+}
+
+.add-key-row td:first-child:before {
+    content: '＋ ';
+}
+
+.add-key-row:hover td {
+    background: #fafafa;
+}

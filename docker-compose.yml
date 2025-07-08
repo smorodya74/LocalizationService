@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:17
+    container_name: localization_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 940777
+      POSTGRES_DB: localizationservicedb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./LocalizationServiceBackend/LocalizationService.WebAPI
+    container_name: localization_backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=db;Database=localizationservicedb;Username=postgres;Password=940777
+    ports:
+      - "5172:5172"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./localizationfrontend
+    container_name: localization_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

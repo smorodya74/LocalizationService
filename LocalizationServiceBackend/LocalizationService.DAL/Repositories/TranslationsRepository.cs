@@ -12,17 +12,18 @@ namespace LocalizationService.DAL.Repositories
         private readonly LocalizationServiceDbContext _context;
         public TranslationsRepository(LocalizationServiceDbContext context) => _context = context;
 
-        public async Task<PagedResult<Translation>> GetTranslationsPBP(
-            int page,
-            int pageSize,
-            CancellationToken ct = default)
+        public async Task<PagedResult<Translation>> GetPageAsync(
+            int page, int pageSize, string search, CancellationToken ct)
         {
-            var totalKeys = await _context.LocalizationKeys
-                .AsNoTracking()
-                .CountAsync(ct);
+            var keyQuery = _context.LocalizationKeys.AsNoTracking();
 
-            var pageKeys = await _context.LocalizationKeys
-                .AsNoTracking()
+            if (!string.IsNullOrWhiteSpace(search))
+                keyQuery = keyQuery
+                    .Where(k => EF.Functions.ILike(k.KeyName, $"%{search}%"));
+
+            var totalKeys = await keyQuery.CountAsync(ct);
+
+            var pagedKeys = await keyQuery
                 .OrderBy(k => k.KeyName)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -30,73 +31,14 @@ namespace LocalizationService.DAL.Repositories
                 .ToListAsync(ct);
 
             var translationEntities = await _context.Translations
+                .AsNoTracking()
                 .Include(t => t.Language)
-                .Where(t => pageKeys.Contains(t.LocalizationKey))
+                .Where(t => pagedKeys.Contains(t.LocalizationKey))
                 .ToListAsync(ct);
 
-            var translations = new List<Translation>();
-
-            foreach (var entity in translationEntities)
-            {
-                var (key, _) = LocalizationKey.CreateDB(entity.LocalizationKey);
-                var (language, _) = Language.CreateDB(entity.Language.LanguageCode, entity.Language.Name);
-
-                if (key != null && language != null)
-                    translations.Add(new Translation(key, language, entity.TranslationText));
-            }
+            var translations = MapToDomain(translationEntities);
 
             return new PagedResult<Translation>(translations, totalKeys, page, pageSize);
-        }
-
-        public async Task<List<Translation>> SearchByKeyAsync(string query, CancellationToken ct)
-        {
-            var translationEntities = await _context.Translations
-                .AsNoTracking()
-                .Include(t => t.Language)
-                .Where(t => EF.Functions.ILike(t.LocalizationKey, $"%{query}%"))
-                .ToListAsync(ct);
-
-            var translations = new List<Translation>();
-
-            foreach (var entity in translationEntities)
-            {
-                var (key, _) = LocalizationKey.CreateDB(entity.LocalizationKey);
-                var (language, _) = Language.CreateDB(
-                                        entity.Language.LanguageCode,
-                                        entity.Language.Name);
-
-                if (key != null && language != null)
-                {
-                    translations.Add(new Translation((LocalizationKey)key, language, entity.TranslationText));
-                }
-            }
-
-            return translations;
-        }
-
-        public async Task<List<Translation>?> GetByKeyAsync(LocalizationKey key, CancellationToken ct)
-        {
-            var translationEntities = await _context.Translations
-                .AsNoTracking()
-                .Where(t => t.LocalizationKey == key.KeyName)
-                .Include(t => t.Language)
-                .ToListAsync(ct);
-
-            var translations = new List<Translation>();
-
-            foreach (var translationEntity in translationEntities)
-            {
-                var (language, _) = Language.CreateDB(
-                    translationEntity.Language.LanguageCode,
-                    translationEntity.Language.Name);
-
-                if (language != null)
-                {
-                    translations.Add(new Translation(key, language, translationEntity.TranslationText));
-                }
-            }
-
-            return translations;
         }
 
         public async Task<string> UpdateAsync(LocalizationKey key, Translation translation, CancellationToken ct)
@@ -181,5 +123,29 @@ namespace LocalizationService.DAL.Repositories
             return languageCode;
         }
 
+        private static List<Translation> MapToDomain(IEnumerable<TranslationEntity> translationEntities)
+        {
+            var translations = new List<Translation>();
+
+            foreach (var entity in translationEntities)
+            {
+                var (key, _) = LocalizationKey.CreateDB(entity.LocalizationKey);
+                var (lang, _) = Language.CreateDB(
+                                     entity.Language.LanguageCode,
+                                     entity.Language.Name);
+
+                if (key is not null && lang is not null)
+                {
+                    var translation = new Translation(
+                        (LocalizationKey)key,
+                        lang,
+                        entity.TranslationText
+                    );
+
+                    translations.Add(translation);
+                }
+            }
+            return translations;
+        }
     }
 }

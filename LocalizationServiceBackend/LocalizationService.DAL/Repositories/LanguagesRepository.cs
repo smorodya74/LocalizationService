@@ -27,6 +27,18 @@ namespace LocalizationService.DAL.Repositories
             return languages;
         }
 
+        public async Task<Language?> GetByCodeAsync(string code, CancellationToken ct = default)
+        {
+            var languageEntity = await _context.Languages
+                .AsNoTracking()
+                .SingleOrDefaultAsync(entity => entity.LanguageCode == code, ct);
+
+            return languageEntity is null
+                ? null
+                : new Language(languageEntity.LanguageCode,
+                               languageEntity.Name);
+        }
+
         public async Task<string> CreateAsync(Language language, CancellationToken ct)
         {
             var languageEntity = new LanguageEntity
