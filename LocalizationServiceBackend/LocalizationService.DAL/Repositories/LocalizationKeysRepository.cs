@@ -27,20 +27,6 @@ namespace LocalizationService.DAL.Repositories
             return keys;
         }
 
-        public async Task<List<LocalizationKey>> SearchAsync(string query, CancellationToken ct)
-        {
-            var localizationKeyEntities = await _context.LocalizationKeys
-                .AsNoTracking()
-                .Where(k =>
-                    EF.Functions.ILike(k.KeyName, $"%{query}%")).ToListAsync(ct);
-
-            return localizationKeyEntities
-                .Select(k => LocalizationKey.CreateDB(k.KeyName).Result)
-                .Where(k => k != null)
-                .Cast<LocalizationKey>()
-                .ToList();
-        }
-
         public async Task<string> CreateAsync(LocalizationKey key, CancellationToken ct)
         {
             var entity = new LocalizationKeyEntity { KeyName = key.KeyName };

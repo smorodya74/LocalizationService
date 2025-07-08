@@ -48,7 +48,6 @@ export default function TranslationTableView({
     isAddLangOpen,
     openAddKey,
     closeAddKey,
-    openAddLang,
     closeAddLang,
     onSuccess
 }: TranslationTableViewProps) {

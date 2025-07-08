@@ -29,13 +29,6 @@ namespace LocalizationService.Application.Services
             return await _repository.GetAllAsync(ct);
         }
 
-        public async Task<List<LocalizationKey>> SearchKey(
-            string querry,
-            CancellationToken ct = default)
-        {
-            return await _repository.SearchAsync(querry, ct);
-        }
-
         public async Task<string> CreateKey(
             LocalizationKey keyValid,
             CancellationToken ct = default)

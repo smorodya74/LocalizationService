@@ -5,7 +5,6 @@ namespace LocalizationService.Application.Abstractions.Repositories
     public interface ILocalizationKeysRepository
     {
         Task<List<LocalizationKey>?> GetAllAsync(CancellationToken ct);
-        Task<List<LocalizationKey>> SearchAsync(string query, CancellationToken ct);
         
         Task<string> CreateAsync(LocalizationKey key, CancellationToken ct);
         

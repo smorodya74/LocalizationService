@@ -24,4 +24,8 @@
     <ProjectReference Include="..\LocalizationService.DAL\LocalizationService.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Новая папка\" />
+  </ItemGroup>
+
 </Project>

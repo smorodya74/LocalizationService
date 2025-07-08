@@ -18,21 +18,10 @@ namespace LocalizationService.Application.Services
             _validator = translationValidator;
         }
 
-        public async Task<PagedResult<Translation>> GetTranslationsPBP(int page, int pageSize, CancellationToken ct)
+        public async Task<PagedResult<Translation>> GetTranslationsPageAsync(
+            int page, int pageSize, string? search, CancellationToken ct)
         {
-            return await _repository.GetTranslationsPBP(page, pageSize, ct);
-        }
-
-        public async Task<List<Translation>?> GetTranslationsByKey(
-            LocalizationKey key,
-            CancellationToken ct)
-        {
-            return await _repository.GetByKeyAsync(key, ct);
-        }
-
-        public async Task<List<Translation>> SearchTranslationsByKey(string query, CancellationToken ct)
-        {
-            return await _repository.SearchByKeyAsync(query, ct);
+            return await _repository.GetPageAsync(page, pageSize, search ?? string.Empty, ct);
         }
 
         public async Task<string> UpdateTranslation(
