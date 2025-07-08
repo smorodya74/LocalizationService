@@ -14,11 +14,13 @@ services:
 
   backend:
     build:
-      context: ./LocalizationServiceBackend/LocalizationService.WebAPI
+      context: ./LocalizationServiceBackend
+      dockerfile: LocalizationService.WebAPI/Dockerfile
     container_name: localization_backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Host=db;Database=localizationservicedb;Username=postgres;Password=940777
+      - ASPNETCORE_URLS=http://+:5172
     ports:
       - "5172:5172"
     depends_on:
@@ -29,7 +31,7 @@ services:
       context: ./localizationfrontend
     container_name: localization_frontend
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
       - backend
 

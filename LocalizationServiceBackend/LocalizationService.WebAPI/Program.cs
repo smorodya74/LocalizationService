@@ -5,7 +5,6 @@ using LocalizationService.Application.Validations;
 using LocalizationService.DAL;
 using LocalizationService.DAL.Repositories;
 using LocalizationService.Domain.Models;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -54,13 +53,19 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LocalizationServiceDbContext>();
+    db.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
