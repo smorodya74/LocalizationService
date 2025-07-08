@@ -11,15 +11,18 @@ interface Props {
 }
 
 export default function AddLanguageModal({ open, onClose, onSuccess }: Props) {
-  const [value, setValue] = useState('');
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('');
 
   const handleOk = async () => {
     try {
       await axios.post('http://localhost:5172/api/languages', {
-        languageCode: value.trim().toLowerCase()
+        languageCode: code.trim().toLowerCase(),
+        name: name.trim()
       });
       message.success('Язык добавлен');
-      setValue('');
+      setCode('');
+      setName('');
       onSuccess();
       onClose();
     } catch {
@@ -33,16 +36,22 @@ export default function AddLanguageModal({ open, onClose, onSuccess }: Props) {
       title="Новый язык"
       okText="Добавить"
       cancelText="Отменить"
-      okButtonProps={{ disabled: value.trim().length !== 3 }}
+      okButtonProps={{ disabled: code.trim().length !== 2 && name.trim().length == 0 }}
       onOk={handleOk}
       onCancel={onClose}
     >
       <Input
-        placeholder="Введите код языка..."
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        // minLength={2}
-        // maxLength={3}
+        placeholder="Код языка 2 буквы (ISO 3166-1)"
+        maxLength={3}
+        value={code}
+        onChange={e => setCode(e.target.value)}
+      />
+      <Input
+        placeholder="Название языка"
+        maxLength={64}
+        value={name}
+        onChange={e => setName(e.target.value)}
+        style={{ marginTop: 12 }}
       />
     </Modal>
   );

@@ -5,8 +5,8 @@ import { Table, Pagination, Spin, Button, Skeleton, Input } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import AddKeyModal from '@/app/Components/AddKeyModal';
-import AddLanguageModal from '@/app/Components/AddLanguageModal';
+import AddKeyModal from '@/app/Components/Modals/AddKeyModal';
+import AddLanguageModal from '@/app/Components/Modals/AddLanguageModal';
 
 interface Row {
     keyName: string;

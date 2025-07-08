@@ -15,7 +15,7 @@ export default function AddKeyModal({ open, onClose, onSuccess }: Props) {
 
   const handleOk = async () => {
     try {
-      await axios.post('http://localhost:5172/api/localization-keys', {
+      await axios.post('http://localhost:5172/api/localization_keys', {
         keyName: value.trim()
       });
       message.success('Ключ добавлен');
