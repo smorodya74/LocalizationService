@@ -36,7 +36,7 @@ namespace LocalizationService.DAL.Repositories
 
             return localizationKeyEntities
                 .Select(k => LocalizationKey.CreateDB(k.KeyName).Result)
-                .Where(k => k is not null)
+                .Where(k => k != null)
                 .Cast<LocalizationKey>()
                 .ToList();
         }

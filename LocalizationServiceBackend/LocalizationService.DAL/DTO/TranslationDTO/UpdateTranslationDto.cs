@@ -3,6 +3,5 @@
     public record UpdateTranslationDto(
     string LocalizationKey,
     string LanguageCode,
-    string LanguageName,
     string? TranslationText);
 }
