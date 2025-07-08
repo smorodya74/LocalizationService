@@ -50,10 +50,19 @@ namespace LocalizationService.DAL.Repositories
 
         public async Task<List<Translation>> SearchByKeyAsync(string query, CancellationToken ct)
         {
+            var keyNames = await _context.LocalizationKeys
+                .AsNoTracking()
+                .Where(k => EF.Functions.ILike(k.KeyName, $"%{query}%"))
+                .Select(k => k.KeyName)
+                .ToListAsync(ct);
+
+            if (keyNames.Count == 0)
+                return new List<Translation>();
+
             var translationEntities = await _context.Translations
                 .AsNoTracking()
                 .Include(t => t.Language)
-                .Where(t => EF.Functions.ILike(t.LocalizationKey, $"%{query}%"))
+                .Where(t => keyNames.Contains(t.LocalizationKey))
                 .ToListAsync(ct);
 
             var translations = new List<Translation>();
@@ -66,9 +75,8 @@ namespace LocalizationService.DAL.Repositories
                                         entity.Language.Name);
 
                 if (key != null && language != null)
-                {
-                    translations.Add(new Translation((LocalizationKey)key, language, entity.TranslationText));
-                }
+                    translations.Add(
+                        new Translation((LocalizationKey)key, language, entity.TranslationText));
             }
 
             return translations;
