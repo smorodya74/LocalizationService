@@ -30,6 +30,11 @@ namespace LocalizationService.Application.Services
             return await _repository.GetAllAsync(ct);
         }
 
+        public async Task<Language?> GetLanguageByCode(string code, CancellationToken ct)
+        {
+            return await _repository.GetByCodeAsync(code, ct);
+        }
+
         public async Task<string> CreateLanguage(
             Language langValid,
             CancellationToken ct = default)

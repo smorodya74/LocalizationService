@@ -11,7 +11,13 @@ namespace LocalizationService.WebAPI.Controllers
     public class TranslationsController : ControllerBase
     {
         private readonly TranslationsService _service;
-        public TranslationsController(TranslationsService service) => _service = service;
+        private readonly LanguagesService _langService;
+
+        public TranslationsController(TranslationsService service, LanguagesService languagesService)
+        {
+            _service = service;
+            _langService = languagesService;
+        }
 
         [HttpGet("page")]
         public async Task<ActionResult<PagedResult<Translation>>> GetPage(
@@ -39,8 +45,9 @@ namespace LocalizationService.WebAPI.Controllers
         [HttpPatch]
         public async Task<IActionResult> Update([FromBody] UpdateTranslationDto dto, CancellationToken ct)
         {
+
             var key = new LocalizationKey(dto.LocalizationKey);
-            var language = new Language(dto.LanguageCode, dto.LanguageName);
+            var language = _langService.GetLanguageByCode(dto.LanguageCode, ct).Result;
 
             var translation = new Translation(key, language, dto.TranslationText);
             await _service.UpdateTranslation(key, translation, ct);
