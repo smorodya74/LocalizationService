@@ -22,7 +22,7 @@ export async function updateTranslation(
   languageCode: string,
   translationText: string
 ): Promise<void> {
-  await axios.put('http://localhost:5172/api/translations', {
+  await axios.patch('http://localhost:5172/api/translations', {
     localizationKey,
     languageCode,
     translationText
