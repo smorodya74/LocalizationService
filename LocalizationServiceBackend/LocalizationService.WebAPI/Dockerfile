@@ -1,16 +1,9 @@
-# См. статью по ссылке https://aka.ms/customizecontainer, 
-# чтобы узнать как настроить контейнер отладки 
-# и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
-
-# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
+# 1. Базовый рантайм-образ — сюда мы будем копировать и запускать наше приложение
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5172
 
-
-# Этот этап используется для сборки проекта службы
+# 2. Образ SDK для сборки проекта
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
@@ -20,12 +13,11 @@ COPY . .
 WORKDIR "/src/LocalizationService.WebAPI"
 RUN dotnet build "./LocalizationService.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+# 3. Публикация (производится из результата сборки)
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./LocalizationService.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+# 4. Финальный образ — берём рантайм, копируем туда опубликованное приложение и задаём команду запуска
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
