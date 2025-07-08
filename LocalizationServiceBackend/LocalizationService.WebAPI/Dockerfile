@@ -4,8 +4,8 @@ EXPOSE 5172
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY . .
+WORKDIR /app
+COPY . /app/. 
 RUN dotnet restore LocalizationService.WebAPI/LocalizationService.WebAPI.csproj
 RUN dotnet publish LocalizationService.WebAPI/LocalizationService.WebAPI.csproj \
     -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
